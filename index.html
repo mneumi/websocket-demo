@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <script>
+    const ws = new WebSocket("ws://172.17.1.126:8080/ws");
+    let isClose = false;
+
+    ws.onopen = () => {
+      console.log("Connection Open ...");
+
+      let i = 1;
+      let timer = setInterval(() => {
+        if (isClose) {
+          clearInterval(timer);
+          return;
+        }
+        ws.send(`HelloWorld-${i}`);
+        i++;
+      }, 1000);
+    };
+
+    ws.onmessage = (evt) => {
+      console.log("Received Message: ", evt.data);
+    };
+
+    ws.onclose = (evt) => {
+      console.log("Connection closed.");
+      isClose = true;
+    };
+
+    ws.onerror = (err) => {
+      console.log(err);
+      ws.close();
+    };
+  </script>
+  <body></body>
+</html>
